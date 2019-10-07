@@ -1,0 +1,109 @@
+<rs-deposit-detail 
+  *ngIf="isDepositDetail" 
+  [(visible)]="isDepositDetail">
+</rs-deposit-detail>
+
+<rs-opening-detail
+  *ngIf="isOpeningDetail"
+  [(visible)]="isOpeningDetail">
+</rs-opening-detail>
+
+<rs-closing-detail
+  *ngIf="isClosingDetail"
+  [(visible)]="isClosingDetail">
+</rs-closing-detail>
+
+<div class="container-fluid">
+
+  <div class="row" style="margin-top:2vh;">
+      <div class="col-sm-2"></div>
+      <div class="col-sm-8">
+          <div class="form-header">
+              <div>Extrato</div>
+          </div>
+      </div>
+      <div class="col-sm-2"></div>
+  </div>
+
+  <div class="row" style="margin-top:2vh">
+      
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+
+          <div class="card table-content">
+            <div class="card-header border-top table-header">
+                <div class="row">
+                  <div class="col-sm-2 text-center">Data</div>
+                  <div class="col-sm-2 text-center">NSU</div>
+                  <div class="col-sm-2 text-left">Transação</div>
+                  <div class="col-sm-3 text-left">Usuário</div>
+                  <div class="col-sm-2 text-right">Valor</div>
+                  <div class="col-sm-1 text-center">Detalhes</div>
+                </div>
+            </div>
+            <div class="card-body table-content">
+                <div class="row" *ngFor="let transactionLog of transactionLogs; let i = index" [ngStyle]="{'background-color': i % 2 === 0 ? '#f6f6f6' : ''}">
+                  <div class="col-sm-2 text-center">{{transactionLog.dateTime | date: "dd/MM/yyyy HH:mm:ss" : 'UTC'}}</div>
+                  <div class="col-sm-2 text-left">{{transactionLog.nsuTerminal}}</div>
+                  <div class="col-sm-2 text-left">{{transactionLog.functionalityName}}</div>
+                  <div class="col-sm-3 text-left">{{transactionLog.userName}}</div>
+                  <div class="col-sm-2 text-right">{{transactionLog.amount | currency: "BRL"}}</div>
+                  <div class="col-sm-1 text-center">
+                    <button *ngIf="transactionLog.functionalityId === 1" 
+                      id="btnDepositDetail" class="action-button" title="Detalhes da abertura" (click)="getOpeningDetail(i)">
+                      <span class="fa fa-align-justify"></span>
+                    </button>
+                    <button *ngIf="transactionLog.functionalityId === 2" 
+                      id="btnDepositDetail" class="action-button" title="Detalhes do fechamento" (click)="getClosingDetail(i)">
+                      <span class="fa fa-align-justify"></span>
+                    </button>
+                    <button *ngIf="transactionLog.functionalityId === 3" 
+                      id="btnDepositDetail" class="action-button" title="Detalhes do depósito" (click)="listDepositDetails(i)">
+                      <span class="fa fa-align-justify"></span>
+                    </button>
+                  </div>
+                </div>
+            </div>
+            <div class="border-top border-bottom table-footer">
+              <div class="row">
+                  <div class="col-sm-10"></div>
+                  <div class="col-sm-2">Total : {{total | currency: "BRL"}}</div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-10" style="margin-top: 0.8rem;">
+                  <div>Página : {{page}} / {{pages}}</div>
+                </div>
+                <div class="col-sm-1" style="padding:0.5rem !important;">
+                    <button id="btnPreviousPage" 
+                      class="btn btn-sm btn-primary btn-block" style="width:100%;" 
+                      [disabled]="page <= 1"
+                      title="Página anterior" (click)="previousPage()">
+                      <span class="fa fa-angle-double-left"></span>
+                    </button>
+                </div>
+                <div class="col-sm-1" style="padding: 0.5rem !important;">
+                    <button id="btnNextPage" 
+                      class="btn btn-sm btn-primary btn-block" style="width:100%;" 
+                      [disabled]="page >= pages"
+                      title="Próxima página" (click)="nextPage()">
+                      <span class="fa fa-angle-double-right"></span>
+                    </button>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+  </div>
+
+  <div class="row" style="margin-top:2vh;">
+    <div class="col-sm-3" ></div>
+    <div class="col-sm-6">
+        <button (click)="goBack()" 
+        id="btnBack" class="btn btn-block menu-back-button"><b>Voltar</b></button>
+    </div>
+    <div class="col-sm-3"></div>
+  </div>
+
+</div>

@@ -1,0 +1,82 @@
+<div class="modal fade" id="depositDetailDialog" tabindex="-1" role="dialog">
+    
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    
+      <div class="modal-content">
+
+          <div class="modal-header detail-title">
+
+            <div class="container-fluid">
+              <div class="row">
+                <div><strong>Detalhes do depósito - {{unitName}}</strong></div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-body">
+    
+            <div class="card">
+              <div class="card-body detail-header-box">
+                  <div class="row detail-header-text">
+                    <div class="col-sm-3 text-center">Data</div>
+                    <div class="col-sm-3 text-center">Terminal</div>
+                    <div class="col-sm-3 text-center">NSU</div>
+                    <div class="col-sm-3 text-center">Usuário</div>
+                  </div>
+                  <div class="row border-top">
+                    <div class="col-sm-3 text-center">{{dateTime | date: "dd/MM/yyyy HH:mm:ss" : 'UTC'}}</div>
+                    <div class="col-sm-3 text-center">{{terminalId}}</div>
+                    <div class="col-sm-3 text-center">{{nsuTerminal}}</div>
+                    <div class="col-sm-3 text-center">{{userName}}</div>
+                  </div>
+              </div>
+            </div>
+          
+            <div class="card table-content" style="margin-top: 1rem;">
+              <div class="card-header border-top detail-table-header">
+                <div class="row">
+                  <div class="col-sm-4 text-right">Cédulas</div>
+                  <div class="col-sm-4 text-right">Valor</div>
+                  <div class="col-sm-4 text-right">Total</div>
+                </div>
+              </div>
+              <div class="card-body table-content" style="padding-top: 0rem; padding-bottom: 0rem;">
+                <div class="row" *ngFor="let depositDetail of depositDetails">
+                  <div class="col-sm-4 text-right">{{depositDetail.quantity}}</div>
+                  <div class="col-sm-4 text-right">{{depositDetail.amount | currency: "BRL"}}</div>
+                  <div class="col-sm-4 text-right">{{depositDetail.quantity * depositDetail.amount | currency: "BRL"}}</div>
+                </div>
+              </div>
+              <div class="border-top border-bottom detail-table-footer">
+                  <div class="row">
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4"></div>
+                    <div class="col-sm-4">
+                      <div>Total : {{amount | currency: "BRL"}}</div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-footer detail-footer-box">
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                  <button id="btnExit" type="button" (click)="hide()" class="btn btn-sm btn-danger btn-block">Sair</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+      </div>
+  
+  </div>
+
+</div>

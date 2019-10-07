@@ -1,0 +1,424 @@
+<rs-text-dialog></rs-text-dialog>
+<ng-vk-keyboard
+    (onEnterClicked)="onEnterClicked($event)"
+    (onCancelClicked)="onCancelClicked($event)">
+</ng-vk-keyboard>
+<rs-company-detail></rs-company-detail>
+
+<div class="container-fluid">
+
+        <div class="row" style="margin-top:2vh;">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="form-header">
+                    <div>Cadastro de Empresas</div>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    
+        <div class="row" style="margin-top:5vh;">
+            <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-primary" 
+                        data-toggle="modal" data-target="#add-modal" >Nova Empresa</button>
+            </div>
+            <div class="col-sm-6"></div>
+        </div>
+  
+        <div class="row" style="margin-top:5vh;">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+
+                    <div class="card table-content">
+                        <div class="card-header border-top detail-table-header">
+                            <div class="row">
+                                <div class="col-sm-3 text-center">Razão Social</div>
+                                <div class="col-sm-3 text-center">Nome Fantasia</div>
+                                <div class="col-sm-2 text-center">Grupo</div>
+                                <div class="col-sm-2 text-center">CNPJ</div>                                  
+                                <div class="col-sm-2 text-center">Ações</div>
+                            </div>
+                        </div>
+                        <div class="card-body table-content" style="padding-top: 1rem; padding-bottom: 1rem;">
+                            <div class="row" *ngFor="let company of companies; let i = index" [ngStyle]="{'background-color': i % 2 === 0 ? '#f6f6f6' : ''}">
+                            <div class="col-sm-3 text-left">{{company.companyName}}</div>
+                            <div class="col-sm-3 text-left">{{company.businessName}}</div>
+                            <div class="col-sm-2 text-center">{{company.groupId}}</div>
+                            <div class="col-sm-2 text-center">{{company.companyId}}</div>
+                            <div class="col-sm-2 text-center">
+                                <button class="action-button" title="Editar uma empresa"><!-- data-toggle="modal" data-target="#add-modal"> -->
+                                        <span class="fa fa-pencil"></span>
+                                </button>                                    
+                                <button class="action-button" title="Detalhes da empresa"
+                                        (click)="viewDetails(company)">
+                                        <span class="fa fa-eye"></span>
+                                </button>                                    
+                                <button class="action-button" title="Remover uma empresa"
+                                        (click)="removeCompany(company)" aria-label="Excluir"><!-- data-toggle="modal" data-target="#delete-modal"> -->
+                                        <span class="fa fa-trash"></span>
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+
+                    </div>          
+                </div>
+            <div class="col-sm-1"></div>
+        </div>
+    
+        <div class="row" style="margin-top:2vh;">
+            <div class="col-sm-3" ></div>
+            <div class="col-sm-6">
+                <button (click)="goBack()" 
+                id="btnBack" class="btn btn-block menu-back-button"><b>Voltar</b></button>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+    </div>
+ 
+    <!-- Modal Adicionar -->
+    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalLabel">Adicionar Empresa</h4>
+                </div>
+                <div class="modal-body">
+                        <div class="row" style="margin-top:2vh;">
+                            <div class="col-sm-12">
+                
+                                <div class="form-content">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="groupId">Grupo :</label>
+                                                <select [(ngModel)]="frmAddCompany.groupId"
+                                                    [disabled]="userGroups.length < 2"
+                                                    [setFocus]='{"field": "companyName", "allowEmpty": false}'
+                                                    class="form-control" id="groupId" name="groupId">
+                                                    <option value="" selected>Selecione o grupo</option>
+                                                    <option *ngFor="let userGroup of userGroups" value="{{userGroup.groupId}}">{{userGroup.groupName}}</option>
+                                                </select>
+                                            </div>                                    
+                                        </div>    
+                                    </div>        
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="companyName">Nome da Empresa :</label>
+                                                <input [(ngModel)]="frmAddCompany.companyName" maxlength="50"
+                                                [setFocus]='{"field": "businessName", "allowEmpty": false}'
+                                                type="text" class="form-control" id="companyName" name="companyName"
+                                                (click)="showKeyboard({ 'fieldId': 'companyName', 'isNumeric': false, 'maxLength': 50 })" 
+                                                autocomplete="off">
+                                            </div>
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="companyName">Nome da Empresa :</label>
+                                                <input [(ngModel)]="frmAddCompany.companyName" maxlength="50"
+                                                [setFocus]='{"field": "businessName", "allowEmpty": false}' 
+                                                type="text" class="form-control" id="companyName" 
+                                                name="companyName" autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">               
+                                            <div  *ngIf="useVK === true" class="form-group">
+                                                <label for="businessName">Nome Fantasia :</label>
+                                                <input [(ngModel)]="frmAddCompany.businessName" maxlength="50" 
+                                                (click)="showKeyboard({ 'fieldId': 'businessName', 'isNumeric': false, 'maxLength': 50 })" 
+                                                type="text" class="form-control" id="businessName" name="businessName"
+                                                [setFocus]='{"field": "companyId", "allowEmpty": false}'
+                                                autocomplete="off">
+                                            </div>
+                                                            
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="businessName">Nome Fantasia :</label>
+                                                <input [(ngModel)]="frmAddCompany.businessName" maxlength="50" 
+                                                type="text" class="form-control" id="businessName" name="businessName"
+                                                [setFocus]='{"field": "companyId", "allowEmpty": false}'
+                                                autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="companyId">CNPJ :</label>
+                                                <input [(ngModel)]="frmAddCompany.companyId" maxlength="14"
+                                                (click)="showKeyboard({ 'fieldId': 'companyId', 'isNumeric': false, 'maxLength': 15 })"  
+                                                type="text" class="form-control" id="companyId" name="companyId"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div  *ngIf="useVK === false" class="form-group">
+                                                <label for="companyId">CNPJ :</label>
+                                                <input [(ngModel)]="frmAddCompany.companyId" maxlength="14" rsCpf 
+                                                type="text" class="form-control" id="companyId" name="companyId"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="companyIE">Inscrição Estadual :</label>
+                                                <input maxlength="14"
+                                                (click)="showKeyboard({ 'fieldId': 'companyIE', 'isNumeric': false, 'maxLength': 15 })"  
+                                                type="text" class="form-control" id="companyIE" name="companyIE"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div  *ngIf="useVK === false" class="form-group">
+                                                <label for="companyIE">Inscrição Estadual :</label>
+                                                <input [(ngModel)]="frmAddCompany.companyIE" maxlength="14" rsCpf 
+                                                type="text" class="form-control" id="companyIE" name="companyIE"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="address">Logradouro :</label>
+                                                <input [(ngModel)]="frmAddCompany.address" maxlength="256"
+                                                (click)="showKeyboard({ 'fieldId': 'address', 'isNumeric': false, 'maxLength': 256 })"  
+                                                type="text" class="form-control" id="address" name="address"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="address">Logradouro :</label>
+                                                <input [(ngModel)]="frmAddCompany.address" maxlength="256"
+                                                type="text" class="form-control" id="address" name="address"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                    
+                                        <div class="col-md-2">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="addressNumber">Número :</label>
+                                                <input [(ngModel)]="frmAddCompany.addressNumber" maxlength="10"
+                                                (click)="showKeyboard({ 'fieldId': 'addressNumber', 'isNumeric': false, 'maxLength': 10 })"  
+                                                type="text" class="form-control" id="addressNumber" name="addressNumber"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="addressNumber">Número :</label>
+                                                <input [(ngModel)]="frmAddCompany.addressNumber" maxlength="10"
+                                                type="text" class="form-control" id="addressNumber" name="addressNumber"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                                        
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="addressComplement">Complemento :</label>
+                                                <input [(ngModel)]="frmAddCompany.addressComplement" maxlength="50"
+                                                (click)="showKeyboard({ 'fieldId': 'addressComplement', 'isNumeric': false, 'maxLength': 50 })"  
+                                                type="text" class="form-control" id="addressComplement" name="addressComplement"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="addressComplement">Complemento :</label>
+                                                <input [(ngModel)]="frmAddCompany.addressComplement" maxlength="50"
+                                                type="text" class="form-control" id="addressComplement" name="addressComplement"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                    
+                                        <div class="col-md-6">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="addressNeighborhood">Bairro :</label>
+                                                <input [(ngModel)]="frmAddCompany.addressNeighborhood" maxlength="50"
+                                                (click)="showKeyboard({ 'fieldId': 'addressNeighborhood', 'isNumeric': false, 'maxLength': 50 })"  
+                                                type="text" class="form-control" id="addressNeighborhood" name="addressNeighborhood"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="addressNeighborhood">Bairro :</label>
+                                                <input [(ngModel)]="frmAddCompany.addressNeighborhood" maxlength="50"
+                                                type="text" class="form-control" id="addressNeighborhood" name="addressNeighborhood"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                                        
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="cityName">Cidade :</label>
+                                                <input [(ngModel)]="frmAddCompany.cityName" maxlength="50"
+                                                (click)="showKeyboard({ 'fieldId': 'cityName', 'isNumeric': false, 'maxLength': 50 })"  
+                                                type="text" class="form-control" id="cityName" name="cityName"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="cityName">Cidade :</label>
+                                                <input [(ngModel)]="frmAddCompany.cityName" maxlength="50"
+                                                type="text" class="form-control" id="cityName" name="cityName"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                    
+                                        <div class="col-md-2">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="stateCode">Estado :</label>
+                                                <input [(ngModel)]="frmAddCompany.stateCode" maxlength="2"
+                                                (click)="showKeyboard({ 'fieldId': 'stateCode', 'isNumeric': false, 'maxLength': 2 })"  
+                                                type="text" class="form-control" id="stateCode" name="stateCode"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="stateCode">Estado :</label>
+                                                <input [(ngModel)]="frmAddCompany.stateCode" maxlength="2"
+                                                type="text" class="form-control" id="stateCode" name="stateCode"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-md-4">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="zipCode">CEP :</label>
+                                                <input [(ngModel)]="frmAddCompany.zipCode" maxlength="10"
+                                                (click)="showKeyboard({ 'fieldId': 'zipCode', 'isNumeric': false, 'maxLength': 10 })"  
+                                                type="text" class="form-control" id="zipCode" name="zipCode"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="zipCode">CEP :</label>
+                                                <input [(ngModel)]="frmAddCompany.zipCode" maxlength="10"
+                                                type="text" class="form-control" id="zipCode" name="zipCode"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                                    
+                                    </div>
+    
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="phoneNumber">Fone :</label>
+                                                <input [(ngModel)]="frmAddCompany.phoneNumber" maxlength="10"
+                                                (click)="showKeyboard({ 'fieldId': 'phoneNumber', 'isNumeric': false, 'maxLength': 10 })"  
+                                                type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="phoneNumber">Fone :</label>
+                                                <input [(ngModel)]="frmAddCompany.phoneNumber" maxlength="10"
+                                                type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                    
+                                        <div class="col-md-4">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="emailAddress">Email :</label>
+                                                <input [(ngModel)]="frmAddCompany.emailAddress" maxlength="100"
+                                                (click)="showKeyboard({ 'fieldId': 'emailAddress', 'isNumeric': false, 'maxLength': 100 })"  
+                                                type="text" class="form-control" id="emailAddress" name="emailAddress"
+                                                autocomplete="off">
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="emailAddress">Email :</label>
+                                                <input [(ngModel)]="frmAddCompany.emailAddress" maxlength="100"
+                                                type="text" class="form-control" id="emailAddress" name="emailAddress"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                                        
+                                        <div class="col-md-4">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="siteAddress">Site :</label>
+                                                <input [(ngModel)]="frmAddCompany.siteAddress" maxlength="100"
+                                                (click)="showKeyboard({ 'fieldId': 'siteAddress', 'isNumeric': false, 'maxLength': 100 })"  
+                                                type="text" class="form-control" id="siteAddress" name="siteAddress"
+                                                autocomplete="off" >
+                                            </div>
+
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="siteAddress">Site :</label>
+                                                <input [(ngModel)]="frmAddCompany.siteAddress" maxlength="100"
+                                                type="text" class="form-control" id="siteAddress" name="siteAddress"
+                                                autocomplete="off">
+                                            </div>
+                                        </div>                                    
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div *ngIf="useVK === true" class="form-group">
+                                                <label for="additionalInfo">Informações adicionais :</label>
+                                                <textarea [(ngModel)]="frmAddCompany.additionalInfo" maxlength="256"
+                                                [setFocus]='{"field": "businessName", "allowEmpty": false}'
+                                                type="text" class="form-control" id="additionalInfo" name="additionalInfo"
+                                                (click)="showKeyboard({ 'fieldId': 'additionalInfo', 'isNumeric': false, 'maxLength': 256 })" 
+                                                autocomplete="off" rows="3"></textarea>
+                                            </div>
+                                            <div *ngIf="useVK === false" class="form-group">
+                                                <label for="additionalInfo">Informações adicionais :</label>
+                                                <textarea [(ngModel)]="frmAddCompany.additionalInfo" maxlength="256"
+                                                [setFocus]='{"field": "businessName", "allowEmpty": false}' 
+                                                type="text" class="form-control" id="additionalInfo" name="additionalInfo" 
+                                                autocomplete="off" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button id="btnCancel"  (click)="onCancel()" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button id="btnConfirm"  (click)="addCompany()" type="button" 
+                            [disabled]="disableSendButton()" data-dismiss="modal" class="btn btn-primary">Adicionar</button>
+               </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Modal Visualizar -->
+ <!--                                               
+    <div class="modal fade" id="view-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modalLabel">Visualizar Empresa</h4>
+                </div>
+                <div class="modal-body">
+
+
+                </div>
+            </div>
+                <div class="modal-footer">
+                    <button id="btnCancel"  type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                </div>
+        </div>
+    </div>
+-->
+    <!-- Modal  Excluir-->
+    
+    <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                    <h4 class="modal-title" id="modalLabel">Excluir Empresa</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Fechar"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    Deseja realmente excluir esta empresa?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" >Sim</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+                </div>
+            </div>
+        </div>
+    </div>
+  

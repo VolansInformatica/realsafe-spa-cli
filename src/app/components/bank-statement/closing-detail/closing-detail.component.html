@@ -1,0 +1,95 @@
+<div class="modal fade" id="closingDetailDialog" tabindex="-1" role="dialog">
+    
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    
+      <div class="modal-content">
+
+          <div class="modal-header detail-title">
+
+            <div class="container-fluid">
+              <div class="row">
+                <div><strong>Detalhes do fechamento - {{unitName}}</strong></div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="modal-body">
+    
+            <div class="card">
+              <div class="card-body detail-header-box">
+                  <div class="row detail-header-text">
+                    <div class="col-sm-3 text-center">Data</div>
+                    <div class="col-sm-3 text-center">Terminal</div>
+                    <div class="col-sm-3 text-center">NSU</div>
+                    <div class="col-sm-3 text-center">Usuário</div>
+                  </div>
+                  <div class="row border-top">
+                    <div class="col-sm-3 text-center">{{dateTime | date: "dd/MM/yyyy HH:mm:ss" : 'UTC'}}</div>
+                    <div class="col-sm-3 text-center">{{terminalId}}</div>
+                    <div class="col-sm-3 text-center">{{nsuTerminal}}</div>
+                    <div class="col-sm-3 text-center">{{userName}}</div>
+                  </div>
+              </div>
+            </div>
+          
+            <div class="card" style="margin-top: 1rem;">
+              <div class="card-body" style="padding: 0rem;">
+                <form>
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <div class="form-content">
+
+                                <div class="form-group">
+                                    <label class="detail-header-text" for="lastOpeningDateTime">Data e hora da última abertura :</label>
+                                    <input [ngModel]="closingDetail.lastOpeningDateTime | date : 'dd/MM/yyyy HH:mm:ss' : 'UTC'" readonly="true"
+                                        tabindex="-1" type="text" class="form-control" id="lastOpeningDateTime" name="lastOpeningDateTime"> 
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="detail-header-text" for="lastOpeningAmount">Valor total remanescente na abertura :</label>
+                                    <input [ngModel]="closingDetail.lastOpeningAmount | currency : 'BRL'" readonly="true"
+                                        tabindex="-1" style="text-align: right" type="text" class="form-control" id="lastOpeningAmount" name="lastOpeningAmount"> 
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="detail-header-text" for="closingDateTime">Data e hora do fechamento :</label>
+                                    <input [ngModel]="closingDetail.closingDateTime | date : 'dd/MM/yyyy HH:mm:ss' : 'UTC'" readonly="true"
+                                        tabindex="-1" type="text" class="form-control" id="closingDateTime" name="closingDateTime"> 
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="detail-header-text" for="amountInSafe">Valor total existente no cofre :</label>
+                                    <input [ngModel]="closingDetail.amountInSafe | currency : 'BRL'"  readonly="true"
+                                        tabindex="-1" style="text-align: right" type="text" class="form-control" id="amountInSafe" name="amountInSafe"> 
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer detail-footer-box">
+
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4"></div>
+                <div class="col-sm-4">
+                  <button id="btnExit" type="button" (click)="hide()" class="btn btn-sm btn-danger btn-block">Sair</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+      </div>
+  
+  </div>
+
+</div>
